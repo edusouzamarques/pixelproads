@@ -201,6 +201,45 @@ h2 .mark{color:var(--red)}
 .contact .cta-row{justify-content:center;margin-top:var(--s5)}
 .contact .sec-head{grid-template-columns:1fr;justify-items:center;gap:var(--s2)}
 
+/* ── phone ───────────────────────────────────────────────────── */
+@media(max-width:700px){
+  /* the studio metadata was eating 189px of an 812px screen in four stacked
+     lines. Collapse each pair onto one row and drop the rest. */
+  .hero-meta{padding-top:74px;gap:6px 18px}
+  .hero-meta div{flex-direction:row;align-items:baseline;gap:7px}
+  .hero-meta dt{color:var(--grey-2)}
+  .hero-meta div:nth-child(n+3){display:none}
+
+  .hero{padding-bottom:var(--s4)}
+  h1{font-size:clamp(38px,11.5vw,52px);letter-spacing:-.045em}
+  .lede{padding-left:var(--s2);font-size:15.5px}
+
+  /* two buttons at two different widths read as a mistake; make them a stack */
+  .cta-row{flex-direction:column;align-items:stretch;gap:8px}
+  .btn{width:100%;justify-content:center;padding:0 18px}
+
+  /* 88px numerals inside a 69px box were being clipped */
+  .pipe-big{font-size:clamp(58px,17vw,190px)}
+  .pipe-label{font-size:17px;min-height:0}
+  .stage{grid-template-columns:34px 1fr;gap:4px 12px}
+  .stage-d{font-size:14px}
+  .stage-t{font-size:17px}
+
+  .sec-head{margin-bottom:var(--s4)}
+  section{padding-block:var(--s5)}
+  .card{padding:var(--s3) var(--s2) var(--s4)}
+  .ctrl{padding:var(--s3) var(--s2)}
+  .f-card{padding:var(--s3) var(--s2)}
+  .f-name{font-size:26px}
+  .f-body p{font-size:15.5px}
+
+  .nav-in{padding:12px var(--pad)}
+  .brand span{font-size:14px}
+  .nav-cta{padding:9px 12px;font-size:10px;letter-spacing:.1em}
+  .foot{flex-direction:column;align-items:flex-start;gap:var(--s2)}
+  .foot nav{flex-wrap:wrap;gap:14px}
+}
+
 /* ── footer ──────────────────────────────────────────────────── */
 footer{border-top:1px solid var(--line);padding-block:var(--s3);position:relative;z-index:2}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:var(--s3);flex-wrap:wrap}
@@ -432,7 +471,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   '  float cell=max(9.,min(R.x,R.y)/62.);',           // responsive cell size
   '  vec2 cid=floor(fc/cell);',
   '  vec2 cc=(cid+.5)*cell;',                          // cell centre in px
-  '  vec2 uv=(cc-.5*R)/R.y;',
+  // normalise by the SHORT side: dividing by height zooms the field far into a
+  // single blob on a portrait phone. Landscape is unchanged (short side = height).
+  '  vec2 uv=(cc-.5*R)/min(R.x,R.y);',
   '  uv.y+=SY;',                                       // parallax: field drifts with scroll
   '  float t=T*.42;',
   // RGB channel separation (chromatic split, ref: Inspector_9 / haris_chc)
@@ -493,7 +534,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       uDIM = gl.getUniformLocation(pg,'DIM'), uSY = gl.getUniformLocation(pg,'SY');
   gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  var dpr = Math.min(devicePixelRatio || 1, 1.6);
+  // phones pay for every pixel twice: battery and a matrix that fights the copy
+  var narrow = function(){ return innerWidth < 700; };
+  var dpr = Math.min(devicePixelRatio || 1, narrow() ? 1.25 : 1.6);
   function size(){
     var w = cv.clientWidth, hh = cv.clientHeight;
     cv.width = Math.max(1, w*dpr|0); cv.height = Math.max(1, hh*dpr|0);
@@ -517,8 +560,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     if (document.hidden) return;
 
     var y = scrollY || pageYOffset, h = innerHeight || 800;
-    // full strength over the hero, then settle to a quiet texture behind the copy
-    var target = 1 - 0.72 * Math.min(1, y / (h * 0.85));
+    // full strength over the hero, then settle to a quiet texture behind the copy.
+    // On a phone the type sits directly on the matrix, so hold it further back.
+    var target = (1 - 0.72 * Math.min(1, y / (h * 0.85))) * (narrow() ? 0.5 : 1);
     dim += (target - dim) * 0.12;
     sy = y / h * 0.42;                       // parallax, slower than the page
 
