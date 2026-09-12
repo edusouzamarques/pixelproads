@@ -203,14 +203,14 @@ h2 .mark{color:var(--red)}
 
 /* ── phone ───────────────────────────────────────────────────── */
 @media(max-width:700px){
-  /* the studio metadata was eating 189px of an 812px screen in four stacked
-     lines. Collapse each pair onto one row and drop the rest. */
-  .hero-meta{padding-top:74px;gap:6px 18px}
-  .hero-meta div{flex-direction:row;align-items:baseline;gap:7px}
-  .hero-meta dt{color:var(--grey-2)}
-  .hero-meta div:nth-child(n+3){display:none}
+  /* The studio metadata is absolutely positioned over a hero whose content is
+     bottom-aligned. On a real phone the browser chrome shortens the viewport,
+     the headline rises, and the two collide - observed on iOS Safari, where
+     "EST. 2023 - MINAS GERAIS, BR" rendered straight through the headline.
+     None of it is needed at this size and the footer already carries it. */
+  .hero-meta{display:none}
 
-  .hero{padding-bottom:var(--s4)}
+  .hero{padding-bottom:var(--s4);padding-top:80px;justify-content:center}
   h1{font-size:clamp(38px,11.5vw,52px);letter-spacing:-.045em}
   .lede{padding-left:var(--s2);font-size:15.5px}
 
