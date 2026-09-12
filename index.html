@@ -233,11 +233,16 @@ h2 .mark{color:var(--red)}
   .f-name{font-size:26px}
   .f-body p{font-size:15.5px}
 
-  .nav-in{padding:12px var(--pad)}
+  /* every tap target stays >=44px: tightening the nav had dropped the brand to
+     22px, the CTA to 36px and the footer links to 16px */
+  .nav-in{padding:6px var(--pad)}
+  .brand{min-height:44px}
   .brand span{font-size:14px}
-  .nav-cta{padding:9px 12px;font-size:10px;letter-spacing:.1em}
-  .foot{flex-direction:column;align-items:flex-start;gap:var(--s2)}
-  .foot nav{flex-wrap:wrap;gap:14px}
+  .nav-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;
+           font-size:10px;letter-spacing:.1em}
+  .foot{flex-direction:column;align-items:flex-start;gap:var(--s1)}
+  .foot nav{flex-wrap:wrap;gap:0 18px}
+  .foot nav a{display:inline-flex;align-items:center;min-height:44px}
 }
 
 /* ── footer ──────────────────────────────────────────────────── */
